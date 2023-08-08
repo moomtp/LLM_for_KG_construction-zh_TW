@@ -2,7 +2,7 @@
 Knowledge graph construction based on LLM
 
 
-# installation
+# Installation
 1. 安裝ckiptagger : https://github.com/ckiplab/ckiptagger#installation
 2. 下載ckiptagger的model到目錄的data資料夾中(一樣參照上面的網站)
 3. 安裝openai的api

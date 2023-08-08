@@ -9,7 +9,7 @@ Knowledge graph construction based on LLM
 
 
 # Usage
-1. 在GPT_key中放入GPT API_key的資料
+1. 在GPT_key.txt中放入GPT API_key的資料
 2. 確定sentences.csv中放入需要的句子data
 3. run NER.py將句子的實體找出並存成sentence_entities.json
 4. run GPT_extraction.py將句子的關係抽出

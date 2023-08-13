@@ -2,7 +2,6 @@
 from ckiptagger import data_utils, construct_dictionary, WS, POS, NER
 import json
 import csv
-import copy
 
 # =====  var setting  =====
 sentence_file_path = 'sentences.csv'

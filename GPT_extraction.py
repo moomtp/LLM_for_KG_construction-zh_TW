@@ -12,7 +12,7 @@ GPT_key_file_path = './GPT_key.txt'
 
 # ====== def function  ======
 
-def GPT_relation_extraction(sentence : str, entity_list : list) -> list:
+def GPT_relation_extraction(sentence : str, entity_list : list, mode:str='gpt-3.5') -> list:
     prompt_1 = "\n 請從以下文本中提取主語-謂語-賓語三元組(SPO三元組)，並以[[主語，謂語，賓語]，...]的形式回答，注意答案中的主語必須包含主語列表提供的實體，否則直接去除 : "  +  \
     "\n例如:" + \
     "\n給定句子 : 美國參議院針對今天總統布什所提名的勞工部長趙小蘭展開認可聽證會，預料她將會很順利通過參議院支持，成為該國有史以來第一位的華裔女性內閣成員。" + \
@@ -31,19 +31,28 @@ def GPT_relation_extraction(sentence : str, entity_list : list) -> list:
     "\n給定句子 : " + sentence + \
     "\nSPO三元組 : "     
 
-    # TODO : if no entity , skip 
+    # TODO : if no entity reconized , skip 
 
-    
-    prompt = prompt_2  # prompt setting
+    # prompt setting 
+    prompt = prompt_2  
+
+    if mode== 'gpt-3.5':
+        MODEL_TYPE ='gpt-3.5-turbo' 
+    elif mode == 'gpt-4':
+        MODEL_TYPE ='gpt-4' 
+
 
     start_idx = 0
     result = []
-    print(prompt)
+    print("\n主語和賓語列表：" + str(entity_list))
+    print("\n給定句子：" + sentence)
+
     while start_idx < len(prompt):
+        # assert input < 400 chinese char
         end_idx = min(start_idx + 1600, len(prompt))
         sub_list = prompt[start_idx:end_idx]
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model=MODEL_TYPE,
             messages=[
                 {"role": "user", "content": f"{sub_list}"}
             ]
@@ -79,7 +88,7 @@ openai.api_key = GPT_key
 relation_list = [['head', 'relation', 'tail']]
 
 for data_ele  in data :
-    relation_result = (GPT_relation_extraction(data_ele['sentence'], data_ele['entity']))
+    relation_result = (GPT_relation_extraction(data_ele['sentence'], data_ele['entity'], mode='gpt-4'))
     for relation_ele in relation_result:
         relation_list.append(relation_ele)
 
@@ -99,7 +108,5 @@ with open(output_relation_file_path, 'w', newline='') as csvfile:
     csvwriter.writerows(relation_list)
 
 
-# assert input < 400 chinese char
 
 
-# testing 

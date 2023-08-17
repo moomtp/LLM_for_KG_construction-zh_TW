@@ -15,47 +15,66 @@ def print_word_pos_sentence(word_sentence, pos_sentence):
     print()
     return
 
+def load_sentence_data(_sentence_file_path : str):
+    with open(_sentence_file_path, newline='') as csvfile:
+        rows = csv.DictReader(csvfile)
+        sentence_list = []
+        for row in rows:
+            print(row['Sentence'])
+            sentence_list.append(row['Sentence'])
+
+    return sentence_list
+
+def ckiptagger_NER(_sentence_list : list):
+    ws = WS("./data")
+    pos = POS("./data")
+    ner = NER("./data")
+
+    # import csv sentences
+
+    # entity extraction
+    word_sentence_list = ws(
+        _sentence_list,
+        # sentence_segmentation = True, # To consider delimiters
+        # segment_delimiter_set = {",", "。", ":", "?", "!", ";"}), # This is the defualt set of delimiters
+        # recommend_dictionary = dictionary1, # words in this dictionary are encouraged
+        # coerce_dictionary = dictionary2, # words in this dictionary are forced
+    )
+
+    pos_sentence_list = pos(word_sentence_list)
+    entity_sentence_list = ner(word_sentence_list, pos_sentence_list)
+
+    return entity_sentence_list
+
+
 # ========  main   ========
 
 
-ws = WS("./data")
-pos = POS("./data")
-ner = NER("./data")
+sentence_list = load_sentence_data(sentence_file_path)
 
-# import csv sentences
-with open(sentence_file_path, newline='') as csvfile:
-    rows = csv.DictReader(csvfile)
-    sentence_list = []
-    for row in rows:
-        print(row['Sentence'])
-        sentence_list.append(row['Sentence'])
-
-# entity extraction
-word_sentence_list = ws(
-    sentence_list,
-    # sentence_segmentation = True, # To consider delimiters
-    # segment_delimiter_set = {",", "。", ":", "?", "!", ";"}), # This is the defualt set of delimiters
-    # recommend_dictionary = dictionary1, # words in this dictionary are encouraged
-    # coerce_dictionary = dictionary2, # words in this dictionary are forced
-)
-
-pos_sentence_list = pos(word_sentence_list)
-
-entity_sentence_list = ner(word_sentence_list, pos_sentence_list)
-
+entity_sentence_list = ckiptagger_NER(sentence_list)
 
 output_entities = []
 
 for i, sentence in enumerate(sentence_list):
-    # print()
-    # print(f"'{sentence}'")
-    # print_word_pos_sentence(word_sentence_list[i],  pos_sentence_list[i])
+
     for entity in sorted(entity_sentence_list[i]):
-        # print(entity)
+
         # saving entity list w/ specific label
+        if(entity[2] == 'CARDINAL' or  entity[2] =='DATE' or entity[2] == 'TIME' ) :
+            continue
         output_entities.append([entity[3] , entity[2]])
 
-        
+# TODO : counting entity #
+entity_counting_dict = {}
+for name , type in output_entities:
+    entity_ID = name + '-' + type
+    if entity_ID in entity_counting_dict:
+        entity_counting_dict[entity_ID] += 1       
+    else:
+        entity_counting_dict[entity_ID] = 1       
+
+print(sorted(entity_counting_dict.items(), key=lambda x: x[1]))
 
 
 #  saving all entity as csv 
@@ -85,7 +104,6 @@ with open(entity_file_path, mode='w', newline='') as file:
 
 # saving entity info & sentences into json file
 
-# TODO : counting entity #
 
 json_data = []
 

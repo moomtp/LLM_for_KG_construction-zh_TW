@@ -61,7 +61,7 @@ for i, sentence in enumerate(sentence_list):
     for entity in sorted(entity_sentence_list[i]):
 
         # saving entity list w/ specific label
-        if(entity[2] == 'CARDINAL' or  entity[2] =='DATE' or entity[2] == 'TIME' ) :
+        if(entity[2] == 'CARDINAL' or  entity[2] =='DATE' or entity[2] == 'TIME' or entity[2] == 'ORDINAL') :
             continue
         output_entities.append([entity[3] , entity[2]])
 

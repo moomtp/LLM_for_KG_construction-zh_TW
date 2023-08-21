@@ -31,7 +31,6 @@ def GPT_relation_extraction(_sentence : str, _entity_list : list, _mode:str='gpt
     "\n給定句子 : " + _sentence + \
     "\nSPO三元組 : "     
 
-    # TODO : if no entity reconized , skip 
 
     # prompt setting 
     prompt = prompt_2  
@@ -65,7 +64,7 @@ def GPT_relation_extraction(_sentence : str, _entity_list : list, _mode:str='gpt
             print("\n GPT回傳資料 : " + choice.message.content)
             GPT_result = ast.literal_eval(choice.message.content)  # change GPT massage string as list
             for item in GPT_result:
-                if((item[0] in _entity_list) or (item[2] in _entity_list) ):
+                if((item[0] in _entity_list) and (item[2] in _entity_list) ):  # only head and tail object both in NER will be filtered out
                     result.append(item)
 
         start_idx = end_idx

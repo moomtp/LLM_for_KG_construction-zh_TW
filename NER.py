@@ -59,7 +59,7 @@ for i, sentence in enumerate(sentence_list):
 
     for entity in sorted(entity_sentence_list[i]):
 
-        # only saving entity list w/ specific label
+        # saving entity list without specific label
         if(entity[2] == 'CARDINAL' or  entity[2] =='DATE' or entity[2] == 'TIME' or entity[2] == 'ORDINAL') :
             continue
         output_entities.append([entity[3] , entity[2]])
@@ -74,9 +74,8 @@ for name , type in output_entities:
         entity_counting_dict[entity_ID] = 1       
 
 entity_counting_dict = sorted(entity_counting_dict.items(), key=lambda x: x[1], reverse=True)
-for i, entity in enumerate(entity_counting_dict):
-    print((entity[0].split('-'))[0])
-    print(entity[1])
+
+
 
 
 #  saving all entity as csv 
@@ -87,7 +86,7 @@ with open(entity_file_path, mode='w', newline='') as file:
     writer.writerow([])  # 寫入空白的一列，即清空CSV檔案內容
 
 # 資料來源（假設這裡有某些資料）
-new_row = {'entity_name': '', 'type': '', 'count' : ''}
+new_row = {'id' : '' , 'entity_name': '', 'type': '', 'count' : ''}
 
 
 # 新建CSV檔案並寫入資料
@@ -100,7 +99,7 @@ with open(entity_file_path, mode='w', newline='') as file:
     # 逐筆寫入資料到CSV檔案
     for i, entity in enumerate(entity_counting_dict):
         
-        
+        new_row['id'] = i
         new_row['entity_name'] = (entity[0].split('-'))[0]  # 將新資料放入新欄位
         new_row['type'] =(entity[0].split('-'))[1] 
         new_row['count'] = entity[1]

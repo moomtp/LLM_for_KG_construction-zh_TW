@@ -207,7 +207,7 @@ input_sentence = ""
 for i , sentence in enumerate(sentence_list):
     input_sentence += sentence  # input two sentences instead of one
     if (i % 2) == 0 : 
-        data_ele = GPT_extraction_and_NER(input_sentence, mode='gpt-4')
+        data_ele = GPT_extraction_and_NER(input_sentence, mode='gpt-3.5')
         raw_data.append(data_ele)
         input_sentence = ""
 

@@ -217,8 +217,7 @@ raw_data = [d for d in raw_data if all(key in d for key in specific_keys)]
 
 # relation preprocessing : delete all relations which ele is less than 3
 for sentence_relation in raw_data : 
-    print("sentence_relation")
-    print(sentence_relation)
+
     sentence_relation['relation'] = [sublist for sublist in sentence_relation['relation'] if len(sublist) >= 3]
 
 
@@ -284,8 +283,8 @@ with open(entity_file_path, 'w', newline='', encoding='utf-8') as csvfile:
     writer.writerow(['entity_name' , 'type'])
     try:
         for entity_field_key , entity_field_list  in entity_data.items(): # [{PER : []} , {LOC : []}]
-            print(entity_field_key)
-            print(entity_field_list)
+            # print(entity_field_key)
+            # print(entity_field_list)
             for entity_ele in entity_field_list:
                 writer.writerow([entity_ele , entity_field_key])
     except Exception as e:

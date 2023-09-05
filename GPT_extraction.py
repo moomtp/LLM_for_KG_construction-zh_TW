@@ -12,7 +12,7 @@ GPT_key_file_path = './GPT_key.txt'
 
 # ====== def function  ======
 
-def GPT_relation_extraction(_sentence : str, _entity_list : list, _mode:str='gpt-3.5') -> list:
+def GPT_relation_extraction(_sentence : str, _entity_list : list, _mode:str='gpt-3.5' , _filter: bool = True) -> list:
     prompt_1 = "\n 請從以下文本中提取主語-謂語-賓語三元組(SPO三元組)，並以[[主語，謂語，賓語]，...]的形式回答，注意答案中的主語必須包含主語列表提供的實體，否則直接去除 : "  +  \
     "\n例如:" + \
     "\n給定句子 : 美國參議院針對今天總統布什所提名的勞工部長趙小蘭展開認可聽證會，預料她將會很順利通過參議院支持，成為該國有史以來第一位的華裔女性內閣成員。" + \
@@ -33,7 +33,7 @@ def GPT_relation_extraction(_sentence : str, _entity_list : list, _mode:str='gpt
 
 
     # prompt setting 
-    prompt = prompt_2  
+    prompt = prompt_1 
 
     if _mode== 'gpt-3.5':
         MODEL_TYPE ='gpt-3.5-turbo' 
@@ -62,13 +62,43 @@ def GPT_relation_extraction(_sentence : str, _entity_list : list, _mode:str='gpt
         )  
         for choice in response.choices:
             print("\n GPT回傳資料 : " + choice.message.content)
-            GPT_result = ast.literal_eval(choice.message.content)  # change GPT massage string as list
-            for item in GPT_result:
-                if((item[0] in _entity_list) and (item[2] in _entity_list) ):  # only head and tail object both in NER will be filtered out
-                    result.append(item)
+            try:
+                GPT_result = ast.literal_eval(choice.message.content)  # change GPT massage string as list
+                for item in GPT_result:
+                    # TODO : filter condition change to search whole entity list
+                    if(not _filter):
+                        result.append(item)
+                    elif((item[0] in _entity_list) and (item[2] in _entity_list) ):  # only head and tail object both in NER will be filtered out
+                        result.append(item)
+            except:
+                print ("GPT exception")
+                continue
 
         start_idx = end_idx
     return result
+# interface for neal4j
+def I_GPT_extraction(_sentence_and_entity_list : list) -> list:
+    GPT_key_file_path = './GPT_key.txt'
+    data = _sentence_and_entity_list
+
+
+
+    # GPT setting
+    keyfile = open(GPT_key_file_path, "r")
+    GPT_key = keyfile.readline()
+    openai.api_key = GPT_key
+
+
+    # extract relation & save result into csv file
+
+    for data_ele  in data :
+        # if no entity be reconized , skip extraction
+        if(not(data_ele['entity'])):
+            continue
+
+        relation_result = (GPT_relation_extraction(data_ele['sentence'], data_ele['entity'], _mode='gpt-4'))
+        data_ele['relation'] = relation_result
+    return data
 
 # ========  main   ========
 
@@ -96,7 +126,7 @@ for data_ele  in data :
     if(not(data_ele['entity'])):
         continue
 
-    relation_result = (GPT_relation_extraction(data_ele['sentence'], data_ele['entity'], mode='gpt-3.5'))
+    relation_result = (GPT_relation_extraction(data_ele['sentence'], data_ele['entity'], _mode='gpt-3.5'))
     for relation_ele in relation_result:
         relation_list.append(relation_ele)
 
@@ -105,16 +135,18 @@ for data_ele  in data :
 # print(relation_list)
 
 # 開啟CSV檔案並將內容清空
-with open(output_relation_file_path, mode='w', newline='') as file:
+with open(output_relation_file_path, mode='w', newline='', encoding='utf-8') as file:
     writer = csv.writer(file)
     writer.writerow([])  # 寫入空白的一列，即清空CSV檔案內容
 
 
-with open(output_relation_file_path, 'w', newline='') as csvfile:
+with open(output_relation_file_path, 'w', newline='', encoding='utf-8') as csvfile:
     print(relation_list)
-
-    csvwriter = csv.writer(csvfile)
-    csvwriter.writerows(relation_list)
+    try:
+        csvwriter = csv.writer(csvfile)
+        csvwriter.writerows(relation_list)
+    except:
+        print('csv encoding error')
 
 
 

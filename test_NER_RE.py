@@ -3,7 +3,8 @@ import ast
 import csv
 import time
 import GPT_NER_RE
-
+import logging
+import openai
 
 
 # TODO : change '，' into ','
@@ -14,6 +15,11 @@ output_relation_file_path = './relation_data.csv'
 sentence_file_path = 'sentences.csv'
 entity_file_path = 'entity_list.csv'
 GPT_key_file_path = './GPT_key.txt'
+
+# log setting
+logging.basicConfig(filename='error_log.txt', level=logging.ERROR,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 raw_data = """找到的實體與關係：
     '''

@@ -16,7 +16,7 @@ Knowledge graph construction based on LLM
 3. run NER.py將句子的實體找出並存成sentence_entities.json
 4. run GPT_extraction.py將句子的關係抽出
 
-### 2. NER, relation extraction by GPT
+## 2. NER, relation extraction by GPT
 1. 直接使用GPT_NER_RE中定義的function即可
 ```python
 import GPT_NER_RE

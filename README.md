@@ -17,7 +17,8 @@ Knowledge graph construction based on LLM
 4. run GPT_extraction.py將句子的關係抽出
 
 ## 2. NER, relation extraction by GPT
-1. 直接使用GPT_NER_RE中定義的function即可
+1. 在GPT_key.txt中放入GPT API_key的資料
+2. 直接使用GPT_NER_RE中定義的function即可
 ```python
 import GPT_NER_RE
 

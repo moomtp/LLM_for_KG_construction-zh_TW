@@ -9,7 +9,18 @@ Knowledge graph construction based on LLM
 
 
 # Usage
+## 1. NER by ckiptagger, relation extraction by GPT
+
 1. 在GPT_key.txt中放入GPT API_key的資料
 2. 確定sentences.csv中放入需要的句子data
 3. run NER.py將句子的實體找出並存成sentence_entities.json
 4. run GPT_extraction.py將句子的關係抽出
+
+### 2. NER, relation extraction by GPT
+1. 直接使用GPT_NER_RE中定義的function即可
+```python
+import GPT_NER_RE
+
+relation_and_entity = GPT_NER_RE.GPT_extraction_list_and_NER(sentence_list) 
+
+```

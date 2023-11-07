@@ -246,15 +246,16 @@ def GPT_extraction_list_and_NER(sentences : list , mode:str='gpt-3.5' , filter: 
         relation_list.append(relation_ele)
 
     # data prepocessing : delete entity which is not in any relation or has no attr
-    for key ,  entity_list in entity_data.items() :
-        delete_idx = []
-        for i , entity_ele in enumerate(entity_list) : 
-            if is_entity_in_relation(entity_ele , relation_list) : 
-                continue
-            delete_idx.append(i)
-        # delete entity
-        new_entity_list = [entity_list[i]  for i  in range(len(entity_list)) if i not in delete_idx]
-        entity_data[key] = new_entity_list
+    if filter:
+      for key ,  entity_list in entity_data.items() :
+          delete_idx = []
+          for i , entity_ele in enumerate(entity_list) : 
+              if is_entity_in_relation(entity_ele , relation_list) : 
+                  continue
+              delete_idx.append(i)
+          # delete entity
+          new_entity_list = [entity_list[i]  for i  in range(len(entity_list)) if i not in delete_idx]
+          entity_data[key] = new_entity_list
 
 
         # ----- saving all data as csv  ------
@@ -403,10 +404,5 @@ def main():
     print("開始時間 : " , time.ctime(start_time))
     print("結束時間 : " , time.ctime(end_time))
 
-
-
-sentence_list = load_sentence_data(sentence_file_path)
-
-output = GPT_extraction_list_and_NER(sentence_list ) 
-
-print(output)
+if __name__ == "__main__":
+  main()

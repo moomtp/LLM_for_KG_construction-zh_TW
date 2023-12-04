@@ -1,5 +1,5 @@
 # LLM_for_KG_construction-zh_TW
-Knowledge graph construction based on LLM
+Chinese knowledge graph construction based on LLM
 
 
 # Installation
@@ -9,6 +9,7 @@ Knowledge graph construction based on LLM
 
 
 # Usage
+方法有兩種，請從下面兩種選一種
 ## 1. NER by ckiptagger, relation extraction by GPT
 
 1. 在GPT_key.txt中放入GPT API_key的資料
@@ -19,9 +20,14 @@ Knowledge graph construction based on LLM
 ## 2. NER, relation extraction by GPT
 1. 在GPT_key.txt中放入GPT API_key的資料
 2. 直接使用GPT_NER_RE中定義的function即可
+
+### example
 ```python
 import GPT_NER_RE
 
 relation_and_entity = GPT_NER_RE.GPT_extraction_list_and_NER(sentence_list) 
 
 ```
+# Reference
+1. ckiptegger : https://github.com/ckiplab/ckipnlp
+2. Spacy : https://github.com/explosion/spaCy
